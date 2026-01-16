@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: project-pokemon
+    env: node
+    buildCommand: npm install && npm run build --prefix frontend
+    startCommand: npm start
+    # Pin a stable Node version (Render supports major versions)
+    nodeVersion: 22

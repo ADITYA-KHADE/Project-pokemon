@@ -17,6 +17,8 @@ app.use(
   helmet({
     // Allow external images (e.g., PokeAPI artwork) to load.
     crossOriginResourcePolicy: { policy: "cross-origin" },
+    // Disable COEP so image hosts without CORS headers still render.
+    crossOriginEmbedderPolicy: false,
   })
 );
 app.use(cors());
