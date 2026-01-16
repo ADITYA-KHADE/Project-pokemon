@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const path = require("path");
 
 const app = express();
 
@@ -12,7 +13,12 @@ const CONFIG = {
   pokeApiBase: process.env.POKE_API_BASE ?? "https://pokeapi.co/api/v2",
 };
 
-app.use(helmet());
+app.use(
+  helmet({
+    // Allow external images (e.g., PokeAPI artwork) to load.
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
@@ -193,6 +199,14 @@ app.use((err, _req, res, _next) => {
       .json({ error: err.message, details: err.details ?? null });
   console.error(err);
   return res.status(500).json({ error: "Unexpected server error" });
+});
+
+const distPath = path.join(__dirname, "frontend", "dist");
+
+app.use(express.static(distPath));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(distPath, "index.html"));
 });
 
 app.listen(CONFIG.port, () => {
